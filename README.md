@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fusion NLE — ブラウザ動画編集ツール
 
-## Getting Started
+Adobe Premiere Pro と Apple Final Cut Pro の「良いとこ取り」をした、**インストール不要・ブラウザ完結**の動画編集ツール（NLE: Non-Linear Editor）です。URL を開くだけで、誰でもすぐに編集を始められます。
 
-First, run the development server:
+> 「分析エージェントによる Premiere Pro / Final Cut Pro の比較分析」→「両者の長所を合体させた設計」→「実装・デプロイ」という流れで開発しました。
+
+## ✨ 特徴
+
+- **ハイブリッドタイムライン**（本ツールの核）
+  - **マグネティックモード**（Final Cut Pro 由来）: クリップが磁石のように吸着し、隙間を自動で詰める。直感的で速い。
+  - **トラックモード**（Premiere Pro 由来）: 明示的なレイヤー管理で自由・厳密に配置。
+  - ワンクリックで切替でき、両方の良さを使い分けられます。
+- **2画面構成のプロUI**: メディア / プログラムモニタ / インスペクタ / タイムライン。
+- **基本編集一式**: 取り込み、ドラッグ配置、トリム、ブレード分割、移動、削除、Undo/Redo。
+- **テロップ**: テキストクリップ（フォントサイズ・色・配置・背景帯）。
+- **カラー補正**: 明るさ・コントラスト・彩度、トランスフォーム（拡大・位置・不透明度）。
+- **オーディオ**: クリップ音量・フェードイン/アウト・トラックミュート。
+- **書き出し**: WebCodecs による H.264 + AAC の MP4 書き出し（映像・音声をミックスダウン）。
+- **ローカル完結・自動保存**: メディアは OPFS、プロジェクトは IndexedDB に保存。サーバーへのアップロードは一切なし。リロードしても復元されます。
+
+## ⌨️ ショートカット
+
+| キー | 動作 |
+|---|---|
+| `Space` | 再生 / 一時停止 |
+| `V` | 選択ツール |
+| `B` | ブレード（分割）ツール |
+| `S` | スナップ吸着の ON/OFF |
+| `← / →` | 1フレーム移動 |
+| `Home / End` | 先頭 / 末尾へ |
+| `Delete` | 選択クリップを削除 |
+| `⌘Z / Ctrl+Z` | 元に戻す |
+| `⌘⇧Z / Ctrl+Shift+Z` | やり直し |
+
+## 🛠 技術スタック
+
+- **Next.js 16（App Router）+ React 19 + TypeScript**
+- **Zustand** — 状態管理 + Undo/Redo 履歴
+- **WebCodecs API** — フレーム精度のエンコード（書き出し）
+- **Canvas 2D コンポジター** — マルチトラック合成・プレビュー描画
+- **Web Audio API（OfflineAudioContext）** — 書き出し時の音声ミックスダウン
+- **mp4-muxer** — MP4 多重化
+- **OPFS + IndexedDB** — ローカル永続化
+- **Tailwind CSS v4** — 暗色プロUIテーマ
+
+## 🚀 開発
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev   # http://localhost:3000
+npm run build # 本番ビルド
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> ビルド/開発は webpack を使用します（`--webpack`）。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌐 対応ブラウザ
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **推奨: Chrome / Edge（Chromium 系最新版）**
+- 書き出し（WebCodecs）は Chromium 系が必要です。Firefox/Safari では編集・プレビューは可能ですが、書き出しは制限されます（非対応の場合は警告を表示）。
 
-## Learn More
+## 📐 設計上の割り切り
 
-To learn more about Next.js, take a look at the following resources:
+- 8K・超長尺・多数トラックのリアルタイム処理や、ProRes 等のプロコーデックはネイティブアプリに譲り、本ツールは「**軽快・即時・インストール不要**」に振り切っています。
+- リアルタイム共同編集や AI 機能は今後の拡張範囲です。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
